@@ -1,0 +1,18 @@
+{
+  "v": 4,
+  "createdOnFiles": { "v": 1, "at": "2026-10-21T17:20:00Z" },
+  "lists": "css",
+  "title": "Tacit: How It Works",
+  "order": ["cover", "problem", "breaking", "statement", "idea", "loop", "observe", "detect", "senior", "junior", "distil", "resurface", "principles", "success", "next"],
+  "sections": {
+    "why": { "description": "Why the reasoning behind expert work gets lost between seniors and juniors.", "start": "cover" },
+    "idea": { "description": "The core idea: two small questions asked at the right moment.", "start": "idea" },
+    "how": { "description": "How Tacit works, step by step, from observing a task to resurfacing knowledge.", "start": "loop" },
+    "trust": { "description": "The principles that keep it trusted, the pilot targets and the next steps.", "start": "principles" }
+  },
+  "faces": {
+    "bricolage-grotesque": { "family": "Bricolage Grotesque", "href": "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400..700&display=swap" },
+    "ibm-plex-sans": { "family": "IBM Plex Sans", "href": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" },
+    "newsreader": { "family": "Newsreader", "href": "https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@1,400;1,500&display=swap" }
+  }
+}
