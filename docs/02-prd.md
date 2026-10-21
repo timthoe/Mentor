@@ -1,6 +1,6 @@
-# Mentor: Product Requirements Document
+# Tacit: Product Requirements Document
 
-*Version 0.1 · Draft · Working name "Mentor" (see §14 for alternatives)*
+*Version 0.2 · Draft · Product name: **Tacit***
 
 | | |
 |---|---|
@@ -14,7 +14,7 @@
 
 ## 1. Summary
 
-Mentor is an AI companion for consulting teams. It follows the communication around a real engagement task in Microsoft 365: client email, Teams chat, meeting transcripts and document versions. It picks out the moments where a senior applies judgment, and then does two things:
+Tacit is an AI companion for consulting teams. It follows the communication around a real engagement task in Microsoft 365: client email, Teams chat, meeting transcripts and document versions. It picks out the moments where a senior applies judgment, and then does two things:
 
 1. It asks the **senior** to put the reasoning into words, which takes seconds and is often just confirming a suggested rationale.
 2. It prompts the **junior** to notice the move, predict the reasoning, and compare their prediction with the senior's.
@@ -31,7 +31,7 @@ Consulting runs on a leverage model in which juniors learn judgment by working a
 - **Knowledge management fails** because the knowledge is captured after the fact. Proposal libraries hold artefacts, not judgment.
 - **Expensive ramp-up.** Analysts take 12–24 months to become reliably autonomous, and attrition is high. Every departure takes judgment with it.
 
-**Opportunity:** the judgment is already being exercised in M365 every day. Mentor captures it at the point of use and at almost no cost to the senior.
+**Opportunity:** the judgment is already being exercised in M365 every day. Tacit captures it at the point of use and at almost no cost to the senior.
 
 ## 3. Goals and non-goals
 
@@ -42,13 +42,13 @@ Consulting runs on a leverage model in which juniors learn judgment by working a
 | G2 | Build juniors' ability to notice and reason about expert moves | ≥ 70% of notice cards completed; prediction–rationale agreement trending up over 8 weeks |
 | G3 | Produce reusable, trusted knowledge | ≥ 3 senior-approved knowledge items per pair per week |
 | G4 | Reduce correction cycles | Fewer senior rewrite rounds on junior drafts (baseline vs. week 8) |
-| G5 | Be trusted | ≥ 80% of pilot users choose to keep Mentor on after the pilot |
+| G5 | Be trusted | ≥ 80% of pilot users choose to keep Tacit on after the pilot |
 
 ### Non-goals
-- **No performance evaluation.** Mentor gives no ratings, rankings or manager dashboards about individuals. This is a hard product constraint, not just a policy.
-- Mentor does not replace formal training, staffing or appraisal processes.
-- Mentor does not generate client deliverables. It is not a copilot for producing work.
-- No firm-wide passive monitoring. Mentor only sees tasks that people explicitly opt in.
+- **No performance evaluation.** Tacit gives no ratings, rankings or manager dashboards about individuals. This is a hard product constraint, not just a policy.
+- Tacit does not replace formal training, staffing or appraisal processes.
+- Tacit does not generate client deliverables. It is not a copilot for producing work.
+- No firm-wide passive monitoring. Tacit only sees tasks that people explicitly opt in.
 - No support for Google Workspace or Slack in v1.
 
 ## 4. Users and personas
@@ -63,7 +63,7 @@ Consulting runs on a leverage model in which juniors learn judgment by working a
 
 ## 5. Key concepts
 
-- **Mentor Task:** a scoped unit of work, such as "SteerCo #3 deck for Halvorsen Logistics". It has members (at least one senior and one junior), linked sources (mail threads, a Teams chat or channel, meetings, files) and a start and end date. Mentor only observes inside Tasks.
+- **Tacit Task:** a scoped unit of work, such as "SteerCo #3 deck for Halvorsen Logistics". It has members (at least one senior and one junior), linked sources (mail threads, a Teams chat or channel, meetings, files) and a start and end date. Tacit only observes inside Tasks.
 - **Moment:** a detected teachable event inside a Task, with a type, summary, source excerpt, involved people and a learning-value score.
 - **Prompt:** a question delivered to a senior (a Why card) or a junior (a Notice card).
 - **Knowledge Item:** a distilled output, either a *Decision*, a *Heuristic* or a *Case*. It is in Draft until the senior approves it, and is then Shared at the Task, Practice or Firm level.
@@ -83,20 +83,20 @@ Consulting runs on a leverage model in which juniors learn judgment by working a
 ## 6. User stories
 
 **Setup**
-- US-1: As an EM, I can create a Mentor Task from a Teams chat or Outlook thread in under a minute and invite my analyst.
-- US-2: As any member, I can see exactly which sources Mentor watches, and I can pause or leave at any time.
+- US-1: As an EM, I can create a Tacit Task from a Teams chat or Outlook thread in under a minute and invite my analyst.
+- US-2: As any member, I can see exactly which sources Tacit watches, and I can pause or leave at any time.
 
 **Senior**
 - US-3: As an EM, I get at most 3 Why cards per day, bundled at a time I choose.
 - US-4: As an EM, I can answer a Why card by confirming or editing a suggested rationale, picking a reason tag, or recording a ≤ 30 s voice note.
 - US-5: As an EM, I can skip a card ("not worth explaining" or "private"), and nothing is stored when I do.
 - US-6: As an EM, I approve, edit or reject each draft Knowledge Item before anyone else sees it.
-- US-7: As an EM, when I say "it depends", Mentor asks me for the conditions and turns the answer into an if/then heuristic.
+- US-7: As an EM, when I say "it depends", Tacit asks me for the conditions and turns the answer into an if/then heuristic.
 
 **Junior**
 - US-8: As an analyst, after my draft is revised, I get a Notice card: "Spot what changed and guess why."
 - US-9: As an analyst, I enter my prediction before the senior's rationale is revealed, and I see how they compare.
-- US-10: As an analyst, I can park questions in an Ask queue. Mentor answers from approved knowledge where it can and bundles the rest for my EM.
+- US-10: As an analyst, I can park questions in an Ask queue. Tacit answers from approved knowledge where it can and bundles the rest for my EM.
 - US-11: As an analyst, I keep a private learning journal of my reflections, notes and the items I've saved.
 - US-12: As an analyst starting a new Task, I'm shown relevant approved heuristics, for example for a SteerCo deck with a CFO audience.
 
@@ -116,7 +116,7 @@ Priority: **P0** = pilot must-have, **P1** = pilot nice-to-have, **P2** = later.
 | F-1 | Create a Task from Teams (message extension) or Outlook (add-in) and link sources: mail conversation IDs, a Teams chat or channel, calendar meetings, SharePoint files | P0 |
 | F-2 | Every member must actively accept before any data from the Task is processed | P0 |
 | F-3 | Members can pause, leave or delete; deleting a Task purges raw excerpts within 24 h | P0 |
-| F-4 | A "What Mentor saw" transparency log per Task | P0 |
+| F-4 | A "What Tacit saw" transparency log per Task | P0 |
 | F-5 | External (client) participants' content is used only as context, never stored verbatim, and redacted | P0 |
 
 ### 7.2 Ingestion (Microsoft Graph)
@@ -176,11 +176,11 @@ Priority: **P0** = pilot must-have, **P1** = pilot nice-to-have, **P2** = later.
 | Surface | Used for | Pri |
 |---|---|---|
 | **Teams app (bot + personal tab)** | Digests, Why and Notice cards, journal, knowledge base, approvals | P0 |
-| **Teams message extension** | "Add to Mentor Task", "Ask Mentor" | P0 |
+| **Teams message extension** | "Add to Tacit Task", "Ask Tacit" | P0 |
 | **Outlook add-in** | Link a thread to a Task; "Send my draft to EM for review" | P1 |
 | **Web app** | Same as the personal tab; admin and knowledge-lead curation | P1 |
 
-**UX principles:** answering takes seconds and needs one tap where possible. Mentor's interventions are phrased as questions or hypotheses, never as verdicts. Juniors and seniors see different framings of the same moment. A visible "Mentor is watching this Task" indicator is shown at all times.
+**UX principles:** answering takes seconds and needs one tap where possible. Tacit's interventions are phrased as questions or hypotheses, never as verdicts. Juniors and seniors see different framings of the same moment. A visible "Tacit is watching this Task" indicator is shown at all times.
 
 ## 9. AI design
 
@@ -197,7 +197,7 @@ Priority: **P0** = pilot must-have, **P1** = pilot nice-to-have, **P2** = later.
 
 **Guardrails**
 - No inference about personality, competence or performance. The system prompt and output filters block evaluative language about people.
-- Suggested rationales are labelled "Mentor's guess" until a person confirms them.
+- Suggested rationales are labelled "Tacit's guess" until a person confirms them.
 - Confidence thresholds: low-confidence moments are dropped, not sent as prompts.
 
 **Quality targets (pilot):** ≥ 70% of delivered prompts rated "relevant" by recipients; < 5% rated "wrong or inappropriate".
@@ -230,27 +230,27 @@ Priority: **P0** = pilot must-have, **P1** = pilot nice-to-have, **P2** = later.
 
 **Layout**
 - **Left: work stream.** Outlook, Teams and transcript items appear one at a time, styled like M365.
-- **Centre: Mentor.** Detected moments are highlighted with a type label.
+- **Centre: Tacit.** Detected moments are highlighted with a type label.
 - **Right: role view.** A toggle switches between **Anna (EM)** with Why cards and approvals, and **Jonas (Analyst)** with Notice cards and predict-then-reveal.
 - **Bottom or drawer: knowledge base.** It fills with approved items as the demo proceeds.
 
 **Scenes**
 | # | Beat | What the viewer sees |
 |---|---|---|
-| 0 | Setup | Anna creates the Mentor Task "SteerCo #3 – Halvorsen" from the Teams chat; Jonas accepts. The consent banner shows what is watched. |
-| 1 | Draft vs. sent | Jonas's draft email to the client (it opens with an apology for the delay and buries the request) → Anna's sent version (the request in the first line, no apology, a deadline, the CFO moved from cc to "to"). Mentor highlights 3 changes. |
-| 2 | Anna's Why card | "You led with the ask and removed the apology. Mentor's guess: *with a CFO audience, lead with the decision needed; apologising signals weakness on timeline.* Right?" Anna taps **Confirm and edit**, adds: "Also: never apologise for something the client caused." Answer time shown: 12 s. |
+| 0 | Setup | Anna creates the Tacit Task "SteerCo #3 – Halvorsen" from the Teams chat; Jonas accepts. The consent banner shows what is watched. |
+| 1 | Draft vs. sent | Jonas's draft email to the client (it opens with an apology for the delay and buries the request) → Anna's sent version (the request in the first line, no apology, a deadline, the CFO moved from cc to "to"). Tacit highlights 3 changes. |
+| 2 | Anna's Why card | "You led with the ask and removed the apology. Tacit's guess: *with a CFO audience, lead with the decision needed; apologising signals weakness on timeline.* Right?" Anna taps **Confirm and edit**, adds: "Also: never apologise for something the client caused." Answer time shown: 12 s. |
 | 3 | Jonas's Notice card | "Spot 3 things Anna changed." Jonas finds 2 and misses the cc change. "Why do you think the apology was removed?" Jonas predicts. Reveal: a side-by-side of his prediction and Anna's rationale, with "You spotted the main idea. One thing you missed: who's on 'to' vs 'cc'." |
-| 4 | Deck revision | Jonas's slide order (Background → Analysis → Recommendation) next to Anna's (Recommendation → Impact for CFO → Supporting analysis); one sensitivity chart removed. Mentor creates a moment; both cards are shown briefly. |
-| 5 | Meeting transcript | In the team prep call Anna says: "Whether we show the downside scenario… it depends who's in the room." Mentor flags a conditional rule and asks Anna: "What decides it?" Anna: "If the CFO is there, show it upfront: they'll find it anyway. If it's only ops, keep it in the appendix." This becomes an if/then heuristic. |
-| 6 | Ask queue | Jonas asks Mentor: "Should I send the pre-read 24 or 48 hours before SteerCo?" Mentor answers from an approved heuristic Anna confirmed earlier and cites it. |
+| 4 | Deck revision | Jonas's slide order (Background → Analysis → Recommendation) next to Anna's (Recommendation → Impact for CFO → Supporting analysis); one sensitivity chart removed. Tacit creates a moment; both cards are shown briefly. |
+| 5 | Meeting transcript | In the team prep call Anna says: "Whether we show the downside scenario… it depends who's in the room." Tacit flags a conditional rule and asks Anna: "What decides it?" Anna: "If the CFO is there, show it upfront: they'll find it anyway. If it's only ops, keep it in the appendix." This becomes an if/then heuristic. |
+| 6 | Ask queue | Jonas asks Tacit: "Should I send the pre-read 24 or 48 hours before SteerCo?" Tacit answers from an approved heuristic Anna confirmed earlier and cites it. |
 | 7 | Knowledge base and debrief | The knowledge base shows 4 approved items with provenance. A Friday debrief agenda with 3 items is posted in the pair's chat. |
-| 8 | One month later | New analyst **Sofie** starts a SteerCo deck for another client with a CFO on the SteerCo. Mentor surfaces the 3 relevant heuristics, attributed to Anna. Closing line: *"Anna's judgment, available when it's needed."* |
+| 8 | One month later | New analyst **Sofie** starts a SteerCo deck for another client with a CFO on the SteerCo. Tacit surfaces the 3 relevant heuristics, attributed to Anna. Closing line: *"Anna's judgment, available when it's needed."* |
 
 **Demo requirements**
 - D-1: Self-contained HTML/JS; works offline; ≤ 1 file plus assets.
 - D-2: Keyboard and button navigation, scene indicator, restart.
-- D-3: Visual language close to M365 (Fluent-like) without using Microsoft logos or branding. Mentor has its own distinct brand colour.
+- D-3: Visual language close to M365 (Fluent-like) without using Microsoft logos or branding. Tacit has its own distinct brand colour.
 - D-4: All names, companies and content are fictional.
 - D-5: Readable on a projector (min 16 px body text) and responsive down to a laptop screen.
 - D-6: Optional "presenter notes" toggle with talking points per scene.
@@ -266,18 +266,9 @@ Priority: **P0** = pilot must-have, **P1** = pilot nice-to-have, **P2** = later.
 
 ## 14. Naming
 
-"Mentor" is clear but generic and hard to trademark or search for. Alternatives:
+**Decision: Tacit.** It names what the product captures, the tacit knowledge behind expert work, and speaks directly to knowledge-management buyers. It replaces the working name "Mentor".
 
-| Name | Rationale |
-|---|---|
-| **Margin** | The reasoning that lives "in the margin" of the work; short and ownable ("Margin notes from Anna"). *Preferred.* |
-| **Overhear** | Brings back the overhearing that hybrid work lost; memorable, slightly provocative (may raise surveillance associations) |
-| **Tacit** | Names exactly what it captures; strong with a KM audience |
-| **Whetstone** | Sharpening judgment by working against a senior |
-| **Understudy** | Learning the role by shadowing; theatrical and warm |
-| **Why Notes** | Descriptive; the product is the "why" |
-
-Trademark and domain availability still need to be checked.
+Alternatives that were considered: Margin, Overhear, Whetstone, Understudy, Why Notes. Trademark and domain availability for "Tacit" still need to be checked.
 
 ## 15. Open questions
 
