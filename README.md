@@ -12,5 +12,5 @@ What gets said is distilled into a living, validated knowledge base of decisions
 ## Documents
 
 1. [Concept](docs/01-concept.md): problem, idea, core loop, interventions, risks, demo direction
-2. PRD: *next*
-3. Demo artefact: *after PRD*
+2. [PRD](docs/02-prd.md): consulting segment, Microsoft 365, requirements, demo script
+3. Demo artefact: *next*
