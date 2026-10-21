@@ -14,6 +14,7 @@ What gets said is distilled into a living, validated knowledge base of decisions
 1. [Concept](docs/01-concept.md): problem, idea, core loop, interventions, risks, demo direction
 2. [PRD](docs/02-prd.md): consulting segment, Microsoft 365, requirements, demo script
 3. [Demo](demo/): scripted, clickable 9-scene walkthrough
+4. [Deck](deck/): 15 slides on the core idea and how it works, step by step
 
 ## Running the demo
 
