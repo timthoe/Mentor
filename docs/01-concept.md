@@ -1,4 +1,4 @@
-# Mentor: Concept
+# Tacit: Concept
 
 *Status: draft for discussion, to be turned into a PRD.*
 
@@ -28,8 +28,8 @@ As a by-product, the firm gets a growing body of **validated, contextual, attrib
 
 ### Theoretical grounding (useful for pitch credibility)
 
-- **Cognitive apprenticeship** (Collins, Brown & Newman): *modelling, coaching, scaffolding, articulation, reflection, exploration*. Mentor's job is to make expert thinking visible (modelling), and to trigger articulation and reflection, which are exactly the steps that get skipped under time pressure.
-- **SECI model** (Nonaka & Takeuchi): Mentor targets *externalisation*, the hard step of converting tacit to explicit knowledge, and does it during *socialisation* (working together) instead of after.
+- **Cognitive apprenticeship** (Collins, Brown & Newman): *modelling, coaching, scaffolding, articulation, reflection, exploration*. Tacit's job is to make expert thinking visible (modelling), and to trigger articulation and reflection, which are exactly the steps that get skipped under time pressure.
+- **SECI model** (Nonaka & Takeuchi): Tacit targets *externalisation*, the hard step of converting tacit to explicit knowledge, and does it during *socialisation* (working together) instead of after.
 - **Retrieval & prediction effects:** asking a junior to predict the senior's reasoning *before* revealing it markedly improves retention compared with just reading it.
 
 ## 3. Core loop
@@ -130,7 +130,7 @@ Items are **draft until the senior approves** them, and can be endorsed or conte
 ## 7. Product surfaces (eventual)
 
 - **Teams/Slack bot** for prompts and quick replies (incl. voice notes)
-- **Outlook/Gmail add-in** to mark a thread as a "Mentor task"
+- **Outlook/Gmail add-in** to mark a thread as a "Tacit task"
 - **Meeting integration:** post-meeting moments from transcripts
 - **Web app:** junior learning journal, senior approval inbox, knowledge base, debrief agendas
 
@@ -157,12 +157,12 @@ Items are **draft until the senior approves** them, and can be endorsed or conte
 A **scripted, clickable 3–5 minute story** shows the value better than a live integration. Suggested shape:
 
 - **Scenario:** a consultancy. Senior manager *Anna* and analyst *Jonas* prepare a client steering-committee update over two days: an email thread with the client, a Teams chat, a meeting transcript, and Jonas's draft vs. the version Anna sent.
-- **Screen layout:** left, the communication stream playing out; centre, Mentor highlighting detected moments; right, toggle between **Anna's view** (micro-why cards, one-tap answers, pre-drafted rationale) and **Jonas's view** (notice cards, predict-then-reveal); bottom/side, the **knowledge base** filling up with approved heuristics.
+- **Screen layout:** left, the communication stream playing out; centre, Tacit highlighting detected moments; right, toggle between **Anna's view** (micro-why cards, one-tap answers, pre-drafted rationale) and **Jonas's view** (notice cards, predict-then-reveal); bottom/side, the **knowledge base** filling up with approved heuristics.
 - **Beats:**
-  1. Jonas's draft email → Anna rewrites it → Mentor spots 3 changes.
+  1. Jonas's draft email → Anna rewrites it → Tacit spots 3 changes.
   2. Anna gets: "You moved the ask to the first line and removed the apology. Why?" Anna confirms a pre-drafted rationale in one tap and adds a voice note.
   3. Jonas gets: "Spot the 3 changes. Why do you think?" → answers → reveal of Anna's reasoning.
-  4. In the meeting transcript Anna says "it depends who's in the room" → Mentor extracts a conditional heuristic and asks Anna to state the conditions.
+  4. In the meeting transcript Anna says "it depends who's in the room" → Tacit extracts a conditional heuristic and asks Anna to state the conditions.
   5. End of week: debrief agenda + knowledge base with 4 approved heuristics; a month later a new junior starting a similar task gets them surfaced.
 - **AI in the demo:** pre-scripted by default (reliable), with an optional live mode where the Claude API generates prompts from pasted text, for the "it's real" moment.
 
@@ -174,4 +174,4 @@ A **scripted, clickable 3–5 minute story** shows the value better than a live 
 4. **Language:** English, Danish, or both in the demo?
 5. **Scope of observation:** pairs only, or small teams (1 senior : several juniors)?
 6. **Demo AI:** fully scripted, or include a live Claude-powered mode?
-7. **Name:** keep "Mentor" or look for something more distinctive?
+7. **Name:** decided: **Tacit** (see PRD §14).

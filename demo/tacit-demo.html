@@ -1,0 +1,1114 @@
+<title>Tacit Demo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap">
+<style>
+/* Layout: a presenter app. Top bar + narration, then three working columns
+   (M365 work stream | what Tacit noticed | the person's own Tacit view),
+   and a knowledge band along the bottom. Stacks to one column on narrow screens. */
+:root {
+  --bg: #f2f4f1;
+  --surface: #ffffff;
+  --surface-2: #e8ece7;
+  --ink: #17201b;
+  --muted: #5b675f;
+  --line: #d2d9d3;
+  --brand: #1e5b45;
+  --brand-ink: #ffffff;
+  --brand-soft: #dcebe3;
+  --marker: rgba(242, 205, 55, 0.55);
+  --marker-solid: #e9c22f;
+  --marker-ink: #2e2600;
+  --ms: #3a66a8;
+  --ms-soft: #e6edf7;
+  --ok: #2c7a4b;
+  --ok-soft: #e0f1e6;
+  --part: #946000;
+  --part-soft: #fbefd6;
+  --miss: #b0432d;
+  --miss-soft: #f8e3dd;
+  --shadow: 0 1px 2px rgba(20, 35, 28, 0.06), 0 4px 14px rgba(20, 35, 28, 0.06);
+
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --f-voice: "Newsreader", Georgia, "Times New Roman", serif;
+  --f-m365: "Segoe UI", system-ui, -apple-system, sans-serif;
+
+  --t-xs: 0.75rem;
+  --t-sm: 0.8125rem;
+  --t-md: 0.9375rem;
+  --t-lg: 1.0625rem;
+  --t-xl: 1.375rem;
+  --t-2xl: 1.875rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1512;
+    --surface: #17201c;
+    --surface-2: #202a25;
+    --ink: #e5ebe7;
+    --muted: #9aa69f;
+    --line: #2e3a34;
+    --brand: #62c29a;
+    --brand-ink: #0b1a13;
+    --brand-soft: #1b392d;
+    --marker: rgba(230, 196, 58, 0.32);
+    --marker-solid: #e2bf3a;
+    --marker-ink: #221b00;
+    --ms: #85abe3;
+    --ms-soft: #1c2a3d;
+    --ok: #68c48d;
+    --ok-soft: #173525;
+    --part: #e3ad52;
+    --part-soft: #3a2d14;
+    --miss: #ec846d;
+    --miss-soft: #3d211b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 14px rgba(0, 0, 0, 0.25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1512;
+  --surface: #17201c;
+  --surface-2: #202a25;
+  --ink: #e5ebe7;
+  --muted: #9aa69f;
+  --line: #2e3a34;
+  --brand: #62c29a;
+  --brand-ink: #0b1a13;
+  --brand-soft: #1b392d;
+  --marker: rgba(230, 196, 58, 0.32);
+  --marker-solid: #e2bf3a;
+  --marker-ink: #221b00;
+  --ms: #85abe3;
+  --ms-soft: #1c2a3d;
+  --ok: #68c48d;
+  --ok-soft: #173525;
+  --part: #e3ad52;
+  --part-soft: #3a2d14;
+  --miss: #ec846d;
+  --miss-soft: #3d211b;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 14px rgba(0, 0, 0, 0.25);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: var(--t-md);
+  line-height: 1.5;
+}
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 4px; }
+
+.app {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 12px;
+  gap: 12px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* ---------- Top bar ---------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.wordmark {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: var(--t-xl);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.wordmark svg { width: 22px; height: 22px; }
+.task-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: var(--t-sm);
+  color: var(--muted);
+  background: var(--surface);
+}
+.task-chip b { color: var(--ink); font-weight: 600; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line); flex: none; }
+.task-chip.watching .dot { background: var(--ok); box-shadow: 0 0 0 3px var(--ok-soft); }
+.scenes {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+.scene-btn {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  color: var(--muted);
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+}
+.scene-btn[aria-current="step"] { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+.scene-btn.done { color: var(--ink); }
+.controls { display: flex; gap: 6px; align-items: center; }
+.btn {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: var(--t-sm);
+  font-weight: 500;
+}
+.btn:hover { border-color: var(--muted); }
+.btn.primary { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn.ghost { background: transparent; }
+.btn[disabled] { opacity: 0.4; cursor: default; }
+.btn[aria-pressed="true"] { background: var(--brand-soft); border-color: var(--brand); }
+.counter { font-family: var(--f-mono); font-size: var(--t-xs); color: var(--muted); font-variant-numeric: tabular-nums; min-width: 4.5em; text-align: center; }
+
+/* ---------- Narration ---------- */
+.narration {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 4px 16px;
+  align-items: baseline;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.narration .scene-label {
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--brand);
+  white-space: nowrap;
+}
+.narration h1 {
+  margin: 0;
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: var(--t-xl);
+  line-height: 1.25;
+  text-wrap: balance;
+}
+.narration.finale h1 { font-size: var(--t-2xl); }
+.narration.finale h1 em { font-family: var(--f-voice); font-style: italic; font-weight: 500; }
+
+/* ---------- Columns ---------- */
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.85fr) minmax(0, 1.1fr);
+  gap: 12px;
+  min-height: 0;
+}
+.col {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
+  min-width: 0;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  overflow: hidden;
+}
+.col-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.col-head h2 {
+  margin: 0;
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: var(--muted);
+}
+.col-head .sub { font-size: var(--t-xs); color: var(--muted); margin-left: auto; }
+.col-body {
+  overflow-y: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scroll-behavior: smooth;
+}
+.col-body > * { flex-shrink: 0; }
+.col.stream { background: var(--surface-2); }
+.col.stream .col-head { background: var(--surface); }
+.col.tacit .col-head h2, .col.role .col-head h2 { color: var(--brand); }
+
+.empty {
+  color: var(--muted);
+  font-size: var(--t-sm);
+  padding: 20px 8px;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* ---------- M365 stream items ---------- */
+.item {
+  font-family: var(--f-m365);
+  font-size: var(--t-sm);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.item.fresh { animation: rise 420ms ease-out both; }
+@keyframes rise { from { transform: translateY(8px); opacity: 0.2; } to { transform: none; opacity: 1; } }
+.item-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  font-size: var(--t-xs);
+  color: var(--muted);
+  border-bottom: 1px solid var(--line);
+  background: var(--ms-soft);
+}
+.app-tag { font-weight: 600; color: var(--ms); }
+.app-tag + span { margin-left: auto; }
+.badge {
+  display: inline-block;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border: 1px solid currentColor;
+}
+.badge.draft { color: var(--part); }
+.badge.sent { color: var(--ok); }
+.item-body { padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+.mail-meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 8px; color: var(--muted); }
+.mail-meta b { color: var(--ink); font-weight: 600; }
+.mail-subject { font-weight: 600; font-size: var(--t-md); }
+.mail-text p { margin: 0 0 6px; }
+.mail-text p:last-child { margin: 0; }
+
+.msg { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 8px; }
+.avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 0.6875rem; font-weight: 600;
+  background: var(--ms-soft); color: var(--ms);
+}
+.avatar.anna { background: var(--part-soft); color: var(--part); }
+.avatar.jonas { background: var(--ms-soft); color: var(--ms); }
+.avatar.sofie { background: var(--miss-soft); color: var(--miss); }
+.avatar.henrik { background: var(--surface-2); color: var(--ink); }
+.avatar.bot { background: var(--brand); color: var(--brand-ink); }
+.msg-name { font-weight: 600; }
+.msg-name time { font-weight: 400; color: var(--muted); margin-left: 6px; font-size: var(--t-xs); }
+
+.transcript { display: flex; flex-direction: column; gap: 6px; }
+.turn { display: grid; grid-template-columns: 4.2em minmax(0, 1fr); gap: 8px; }
+.turn .ts { font-family: var(--f-mono); font-size: var(--t-xs); color: var(--muted); padding-top: 1px; font-variant-numeric: tabular-nums; }
+.turn .who { font-weight: 600; margin-right: 4px; }
+
+.deck { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.deck-row { display: grid; grid-template-columns: 5.5em minmax(0, 1fr); gap: 8px; align-items: start; }
+.deck-row .lbl { font-size: var(--t-xs); color: var(--muted); padding-top: 6px; }
+.slides { display: flex; flex-wrap: wrap; gap: 6px; }
+.slide {
+  width: 92px;
+  aspect-ratio: 16 / 9;
+  max-width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-size: 0.625rem;
+  line-height: 1.25;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.slide .n { font-family: var(--f-mono); color: var(--muted); }
+.slide.cut { opacity: 0.45; text-decoration: line-through; }
+
+mark.tm { background: transparent; color: inherit; border-radius: 2px; transition: background 400ms ease; }
+mark.tm.on {
+  background: linear-gradient(transparent 8%, var(--marker) 8%, var(--marker) 92%, transparent 92%);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.slide.tm-on { outline: 2px solid var(--marker-solid); outline-offset: 1px; }
+
+/* ---------- Moments ---------- */
+.moment {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--surface);
+}
+.moment.fresh { animation: rise 420ms ease-out both; }
+.moment-top { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.type {
+  font-family: var(--f-mono);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--marker);
+  color: var(--ink);
+}
+.value { font-size: var(--t-xs); color: var(--muted); margin-left: auto; }
+.value b { color: var(--ink); font-weight: 600; }
+.moment h3 { margin: 0; font-size: var(--t-md); font-weight: 600; line-height: 1.35; }
+.moment .src { font-size: var(--t-xs); color: var(--muted); }
+.status {
+  align-self: flex-start;
+  font-size: var(--t-xs);
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--muted);
+}
+.status.ok { background: var(--ok-soft); color: var(--ok); }
+.status.ask { background: var(--brand-soft); color: var(--brand); }
+
+/* ---------- Role panel ---------- */
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin-left: auto; }
+.seg button {
+  border: 0;
+  background: transparent;
+  padding: 4px 10px;
+  font-size: var(--t-xs);
+  cursor: pointer;
+  color: var(--muted);
+}
+.seg button[aria-pressed="true"] { background: var(--brand); color: var(--brand-ink); }
+.seg button[hidden] { display: none; }
+.role-who { font-size: var(--t-xs); color: var(--muted); }
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.card.fresh { animation: rise 420ms ease-out both; }
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.card-head .meta { margin-left: auto; font-weight: 400; color: var(--muted); font-family: var(--f-mono); }
+.card-body { padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.card h3 { margin: 0; font-family: var(--f-display); font-weight: 500; font-size: var(--t-lg); line-height: 1.3; text-wrap: balance; }
+.card p { margin: 0; }
+.quote {
+  font-size: var(--t-sm);
+  color: var(--muted);
+  border-left: 3px solid var(--marker-solid);
+  padding-left: 10px;
+  font-family: var(--f-m365);
+}
+.guess {
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.guess .lbl, .field-lbl {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-weight: 600;
+}
+.voice {
+  font-family: var(--f-voice);
+  font-style: italic;
+  font-size: var(--t-lg);
+  line-height: 1.45;
+  color: var(--ink);
+}
+.voice.added { border-top: 1px dashed var(--line); padding-top: 6px; margin-top: 2px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: var(--t-xs);
+  color: var(--muted);
+}
+.tag.on { border-color: var(--brand); background: var(--brand-soft); color: var(--brand); }
+.actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.timer {
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  color: var(--ok);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.kv { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; font-size: var(--t-sm); }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; }
+.note-strip {
+  font-size: var(--t-xs);
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+.list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.list li {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  font-size: var(--t-sm);
+}
+.tick {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 0.6875rem; font-weight: 600;
+  background: var(--surface-2); color: var(--muted);
+  font-family: var(--f-mono);
+}
+.tick.ok { background: var(--ok-soft); color: var(--ok); }
+.tick.miss { background: var(--miss-soft); color: var(--miss); }
+.tick.part { background: var(--part-soft); color: var(--part); }
+.input-like {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: var(--t-sm);
+  background: var(--bg);
+}
+.input-like.empty-slot { color: var(--muted); font-style: italic; }
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.compare > div { border-radius: 8px; padding: 10px; background: var(--surface-2); display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.verdict { display: flex; gap: 8px; align-items: flex-start; font-size: var(--t-sm); border-radius: 8px; padding: 8px 10px; }
+.verdict.ok { background: var(--ok-soft); }
+.verdict.miss { background: var(--miss-soft); }
+.verdict .tick { flex: none; }
+.heuristic {
+  border: 1px solid var(--brand);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--surface);
+}
+.heuristic .h-kind { font-family: var(--f-mono); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--brand); }
+.heuristic .h-text { font-size: var(--t-md); line-height: 1.4; }
+.heuristic .h-text b { font-weight: 600; }
+.heuristic .h-prov { font-size: var(--t-xs); color: var(--muted); }
+.wave { display: flex; align-items: center; gap: 2px; height: 24px; }
+.wave i { display: block; width: 3px; border-radius: 2px; background: var(--brand); }
+.voice-row { display: flex; align-items: center; gap: 10px; background: var(--surface-2); border-radius: 999px; padding: 4px 12px 4px 4px; }
+.play { width: 28px; height: 28px; border-radius: 50%; background: var(--brand); color: var(--brand-ink); display: grid; place-items: center; font-size: 0.625rem; flex: none; }
+
+/* ---------- Knowledge band ---------- */
+.kb {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  display: grid;
+  grid-template-columns: 11rem minmax(0, 1fr);
+  align-items: stretch;
+  transition: box-shadow 300ms ease, border-color 300ms ease;
+}
+.kb.spot { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-soft); }
+.kb-head { padding: 10px 14px; border-right: 1px solid var(--line); display: flex; flex-direction: column; justify-content: center; gap: 2px; }
+.kb-head h2 { margin: 0; font-size: var(--t-xs); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; color: var(--brand); }
+.kb-count { font-family: var(--f-display); font-size: var(--t-xl); font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.kb-count small { font-family: var(--f-body); font-size: var(--t-xs); font-weight: 400; color: var(--muted); display: block; }
+.kb-items { display: flex; gap: 10px; overflow-x: auto; padding: 10px 14px; min-width: 0; }
+.kb-item {
+  flex: 0 0 17rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: var(--t-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.kb-item.fresh { animation: rise 420ms ease-out both; border-color: var(--brand); }
+.kb-item .h-kind { font-family: var(--f-mono); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--brand); }
+.kb-item .h-prov { font-size: var(--t-xs); color: var(--muted); margin-top: auto; }
+.kb-empty { color: var(--muted); font-size: var(--t-sm); align-self: center; }
+
+/* ---------- Presenter notes ---------- */
+.notes {
+  position: fixed;
+  right: calc(16px + env(safe-area-inset-right, 0px));
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  width: min(380px, calc(100vw - 32px));
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: var(--shadow);
+  font-size: var(--t-sm);
+  z-index: 20;
+}
+.notes h2 { margin: 0 0 6px; font-size: var(--t-xs); text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.7; }
+.notes ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+.notes .keys { margin-top: 10px; opacity: 0.65; font-family: var(--f-mono); font-size: var(--t-xs); }
+
+@media (max-width: 1100px) {
+  .columns { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .col.role { grid-column: 1 / -1; }
+  .app { height: auto; }
+  html, body { height: auto; }
+  .col { max-height: none; }
+  .col-body { max-height: 70vh; }
+}
+@media (max-width: 720px) {
+  .columns { grid-template-columns: minmax(0, 1fr); }
+  .narration { grid-template-columns: minmax(0, 1fr); }
+  .kb { grid-template-columns: minmax(0, 1fr); }
+  .kb-head { border-right: 0; border-bottom: 1px solid var(--line); }
+  .scenes { margin-left: 0; order: 3; width: 100%; }
+  .controls { margin-left: auto; }
+  .compare { grid-template-columns: minmax(0, 1fr); }
+  .kb-item { flex-basis: 15rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+
+<div class="app">
+  <header class="topbar">
+    <div class="wordmark" aria-label="Tacit">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h4v2H7v14h2v2H5z" fill="var(--brand)"></path><rect x="11" y="7" width="9" height="3" rx="1.5" fill="var(--marker-solid)"></rect><rect x="11" y="12" width="6" height="3" rx="1.5" fill="var(--ink)" opacity="0.35"></rect></svg>
+      Tacit
+    </div>
+    <div class="task-chip" id="taskChip"><span class="dot"></span><span id="taskText">No task yet</span></div>
+    <nav class="scenes" id="scenes" aria-label="Scenes"></nav>
+    <div class="controls">
+      <button class="btn ghost" id="prevBtn" type="button" aria-label="Previous step">←</button>
+      <span class="counter" id="counter"></span>
+      <button class="btn primary" id="nextBtn" type="button">Next →</button>
+      <button class="btn ghost" id="notesBtn" type="button" aria-pressed="false" title="Presenter notes (N)">Notes</button>
+      <button class="btn ghost" id="restartBtn" type="button" title="Restart (R)">Restart</button>
+    </div>
+  </header>
+
+  <section class="narration" id="narration" aria-live="polite">
+    <div class="scene-label" id="sceneLabel"></div>
+    <h1 id="caption"></h1>
+  </section>
+
+  <main class="columns">
+    <section class="col stream" aria-label="Work stream">
+      <div class="col-head"><h2>Microsoft 365</h2><span class="sub">Outlook · Teams · meetings · files</span></div>
+      <div class="col-body" id="stream"></div>
+    </section>
+    <section class="col tacit" aria-label="What Tacit noticed">
+      <div class="col-head"><h2>Tacit noticed</h2><span class="sub" id="momentCount"></span></div>
+      <div class="col-body" id="moments"></div>
+    </section>
+    <section class="col role" aria-label="Personal Tacit view">
+      <div class="col-head">
+        <h2>Tacit in Teams</h2>
+        <span class="role-who" id="roleWho"></span>
+        <div class="seg" role="group" aria-label="Whose view">
+          <button type="button" data-role="anna" aria-pressed="false">Anna · EM</button>
+          <button type="button" data-role="jonas" aria-pressed="false">Jonas · Analyst</button>
+          <button type="button" data-role="sofie" aria-pressed="false" hidden>Sofie · Analyst</button>
+        </div>
+      </div>
+      <div class="col-body" id="panel"></div>
+    </section>
+  </main>
+
+  <section class="kb" id="kb" aria-label="Knowledge base">
+    <div class="kb-head">
+      <h2>Knowledge base</h2>
+      <div class="kb-count"><span id="kbCount">0</span><small>approved on this task</small></div>
+    </div>
+    <div class="kb-items" id="kbItems"></div>
+  </section>
+</div>
+
+<aside class="notes" id="notes" hidden aria-label="Presenter notes">
+  <h2 id="notesTitle">Presenter notes</h2>
+  <ul id="notesList"></ul>
+  <div class="keys">→ / Space next · ← back · N notes · R restart · 1–9 jump</div>
+</aside>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Small builders ---------- */
+  const av = (cls, txt) => `<span class="avatar ${cls}">${txt}</span>`;
+  const m = (id, txt) => `<mark class="tm" data-m="${id}">${txt}</mark>`;
+
+  function mail({ app = "Outlook", state, time, from, to, cc, subject, body }) {
+    return `<div class="item-top"><span class="app-tag">${app}</span><span>${time}</span>${state ? `<span class="badge ${state.toLowerCase()}">${state}</span>` : ""}</div>
+      <div class="item-body">
+        <div class="mail-meta"><span>From</span><b>${from}</b><span>To</span><span>${to}</span>${cc ? `<span>Cc</span><span>${cc}</span>` : ""}</div>
+        <div class="mail-subject">${subject}</div>
+        <div class="mail-text">${body}</div>
+      </div>`;
+  }
+  function teams({ where, time, msgs }) {
+    return `<div class="item-top"><span class="app-tag">Teams</span><span>${where} · ${time}</span></div>
+      <div class="item-body">${msgs.map(x => `<div class="msg">${av(x.cls, x.ini)}<div><div class="msg-name">${x.name}<time>${x.t || ""}</time></div><div>${x.text}</div></div></div>`).join("")}</div>`;
+  }
+  function transcript({ title, time, turns }) {
+    return `<div class="item-top"><span class="app-tag">Teams meeting · transcript</span><span>${title} · ${time}</span></div>
+      <div class="item-body transcript">${turns.map(t => `<div class="turn"><span class="ts">${t.ts}</span><span><span class="who">${t.who}</span>${t.text}</span></div>`).join("")}</div>`;
+  }
+  const slide = (n, txt, extra = "") => `<div class="slide ${extra}"><span class="n">${n}</span><span>${txt}</span></div>`;
+
+  function waveform(n) {
+    let s = "";
+    for (let i = 0; i < n; i++) {
+      const h = 6 + Math.round(16 * Math.abs(Math.sin(i * 1.7) * Math.cos(i * 0.6)));
+      s += `<i style="height:${h}px"></i>`;
+    }
+    return `<span class="wave" aria-hidden="true">${s}</span>`;
+  }
+
+  const prov = (who, where, when) => `${who} · ${where} · ${when}`;
+
+  /* ---------- Knowledge items ---------- */
+  const KB = {
+    k1: { kind: "Heuristic", text: "When the CFO is on the email, <b>put the ask and the deadline in the first line</b>. The CFO owns the decision, so she goes on To, not Cc.", prov: prov("Anna Lindqvist", "SteerCo #3", "4 Nov") },
+    k2: { kind: "Heuristic", text: "<b>Don't apologise for a delay the client caused.</b> It shifts ownership of the timeline to us.", prov: prov("Anna Lindqvist", "SteerCo #3", "4 Nov") },
+    k3: { kind: "Heuristic", text: "In a SteerCo deck, <b>open with the recommendation and its financial impact</b>. The analysis comes after, as support.", prov: prov("Anna Lindqvist", "SteerCo #3", "5 Nov") },
+    k4: { kind: "Heuristic · conditional", text: "<b>If the CFO attends</b>, show the downside scenario upfront. <b>If only operations attend</b>, keep it in the appendix.", prov: prov("Anna Lindqvist", "SteerCo #3", "5 Nov") }
+  };
+
+  /* ---------- Stream items ---------- */
+  const S = {
+    kickoff: { html: teams({ where: "Halvorsen – SteerCo #3", time: "Mon 4 Nov", msgs: [
+      { cls: "anna", ini: "AL", name: "Anna Lindqvist", t: "09:12", text: "Jonas, can you take first drafts of the data request to the client and the SteerCo deck? Heads-up: Kjersti (CFO) joins the SteerCo from now on." },
+      { cls: "jonas", ini: "JB", name: "Jonas Berg", t: "09:15", text: "On it. Draft email to you before lunch." }
+    ] }) },
+    draft: { html: mail({ state: "Draft", time: "Mon 4 Nov · 11:40", from: "Jonas Berg", to: "Mikkel Dahl (Head of Operations)", cc: "Kjersti Aas (CFO); Anna Lindqvist", subject: "Network study – data request", body:
+      `<p>Hi Mikkel, hi Kjersti,</p>
+       <p>Apologies for the delay on our side with the updated model. We have made good progress on the depot network analysis and are looking forward to the SteerCo.</p>
+       <p>It would be great if you could possibly share the Q3 volume data per depot when you get a chance, so we can finalise the numbers.</p>
+       <p>Best regards,<br>Jonas</p>` }) },
+    sent: { html: mail({ state: "Sent", time: "Mon 4 Nov · 13:05", from: "Anna Lindqvist", to: m("m3", "Kjersti Aas (CFO); Mikkel Dahl (Head of Operations)"), cc: "Jonas Berg", subject: "Data needed by Thu 7 Nov for SteerCo on 14 Nov", body:
+      `<p>Kjersti, Mikkel,</p>
+       <p>${m("m1", "To keep the SteerCo on 14 Nov on track, we need the Q3 volume data per depot by Thursday 7 Nov.")}</p>
+       <p>With it we can show the cost impact of consolidating the depot network, which is the decision we will ask the SteerCo to take. ${m("m2", "The model itself is ready.")}</p>
+       <p>Best,<br>Anna</p>` }) },
+    deck: { html: `<div class="item-top"><span class="app-tag">PowerPoint · SharePoint</span><span>SteerCo3_Halvorsen.pptx · Tue 5 Nov</span></div>
+      <div class="item-body deck">
+        <div class="deck-row"><span class="lbl">v3 · Jonas</span><div class="slides">${slide(1, "Background")}${slide(2, "Approach")}${slide(3, "Network analysis")}${slide(4, "Sensitivity by depot")}${slide(5, "Recommendation")}</div></div>
+        <div class="deck-row"><span class="lbl">v4 · Anna</span><div class="slides">${slide(1, "Recommendation: consolidate 7 → 5 depots", "tmslide\" data-m=\"m4")}${slide(2, "Impact: DKK 18m saving per year", "tmslide\" data-m=\"m4")}${slide(3, "Supporting analysis")}${slide(4, "Next steps and decision needed")}${slide("–", "Sensitivity by depot", "cut tmslide\" data-m=\"m5")}</div></div>
+      </div>` },
+    prep: { html: transcript({ title: "SteerCo prep", time: "Tue 5 Nov · 14:00", turns: [
+      { ts: "14:21", who: "Jonas", text: "Should we include the downside scenario, where volumes drop 15 percent?" },
+      { ts: "14:21", who: "Anna", text: `Hmm. Whether we show the downside scenario… ${m("m6", "it depends who's in the room.")}` },
+      { ts: "14:22", who: "Jonas", text: "Okay." },
+      { ts: "14:22", who: "Anna", text: "Let's keep it in for now and decide on Thursday." }
+    ] }) },
+    debrief: { html: teams({ where: "Anna & Jonas", time: "Fri 8 Nov", msgs: [
+      { cls: "bot", ini: "T", name: "Tacit", t: "08:30", text: `<b>Friday debrief · 10 min</b><br>1. To vs Cc: who owns the decision?<br>2. "It depends who's in the room": where else does that apply?<br>3. Jonas's open questions (2)` }
+    ] }) },
+    sofieKick: { html: teams({ where: "Rasmussen Foods – SteerCo #1", time: "Mon 9 Dec", msgs: [
+      { cls: "henrik", ini: "HV", name: "Henrik Vestergaard", t: "08:50", text: "Sofie, could you do the first draft of the SteerCo deck by Wednesday? Their CFO chairs the SteerCo." },
+      { cls: "sofie", ini: "SM", name: "Sofie Madsen", t: "08:52", text: "Yes, will do!" }
+    ] }) }
+  };
+
+  /* ---------- Moments ---------- */
+  const M = {
+    m1: { type: "Client communication", title: "The ask moved to the first line, with a deadline", src: "Jonas's draft → Anna's sent email", value: "High" },
+    m2: { type: "Content cut", title: "The apology for the delay was removed", src: "Jonas's draft → Anna's sent email", value: "High" },
+    m3: { type: "Stakeholder", title: "The CFO moved from Cc to To", src: "Jonas's draft → Anna's sent email", value: "Medium" },
+    m4: { type: "Storyline", title: "Recommendation and impact moved to slides 1–2", src: "SteerCo deck v3 → v4", value: "High" },
+    m5: { type: "Content cut", title: "Sensitivity chart removed", src: "SteerCo deck v3 → v4", value: "Medium" },
+    m6: { type: "Conditional rule", title: "\"It depends who's in the room\"", src: "SteerCo prep call · 14:21", value: "High" }
+  };
+
+  /* ---------- Panels ---------- */
+  const P = {};
+
+  P.create = `<div class="card fresh"><div class="card-head">New Tacit task<span class="meta">from this chat</span></div><div class="card-body">
+    <h3>Turn this work into a Tacit task</h3>
+    <dl class="kv">
+      <dt>Task</dt><dd>SteerCo #3 – Halvorsen Logistics</dd>
+      <dt>Members</dt><dd>Anna Lindqvist (senior), Jonas Berg (junior)</dd>
+      <dt>Watches</dt><dd>This chat · mail thread "Network study" · meeting "SteerCo prep" · folder Halvorsen/SteerCo3</dd>
+      <dt>Ends</dt><dd>15 Nov, after the SteerCo</dd>
+    </dl>
+    <div class="actions"><button class="btn primary" type="button" data-next>Create and invite Jonas</button></div>
+    <p class="note-strip">Nothing is processed until every member has accepted.</p>
+  </div></div>`;
+
+  P.invite = `<div class="card fresh"><div class="card-head">Invitation<span class="meta">Mon 09:20</span></div><div class="card-body">
+    <h3>Anna invited you to a Tacit task: SteerCo #3 – Halvorsen</h3>
+    <ul class="list">
+      <li><span class="tick ok">✓</span><span>Tacit spots moments where Anna's judgment shows, and asks you to notice them.</span></li>
+      <li><span class="tick ok">✓</span><span>Your predictions and journal are private to you.</span></li>
+      <li><span class="tick ok">✓</span><span>Tacit never rates you. Nothing is shared with staffing or appraisals.</span></li>
+      <li><span class="tick ok">✓</span><span>You can pause or leave at any time.</span></li>
+    </ul>
+    <div class="actions"><button class="btn primary" type="button" data-next>Accept</button><button class="btn" type="button">Not now</button></div>
+  </div></div>`;
+
+  P.jonasWait = `<div class="card fresh"><div class="card-body">
+    <h3>Your draft went to Anna for review</h3>
+    <p class="note-strip" style="border:0;padding:0">Tacit will let you know when there is something worth looking at.</p>
+  </div></div>`;
+
+  P.annaWhy = `<div class="card fresh"><div class="card-head">Your Tacit digest<span class="meta">Mon 16:30 · 1 of 2</span></div><div class="card-body">
+    <h3>You rewrote Jonas's email to Halvorsen. Three changes stood out.</h3>
+    <div class="quote">The ask moved to the first line with a deadline · the apology was removed · Kjersti moved from Cc to To</div>
+    <div class="guess"><span class="lbl">Tacit's guess. Is this right?</span>
+      <span class="voice">With a CFO in the audience, lead with the decision you need and the date. Apologising signals weakness on the timeline. Kjersti owns the budget, so she goes on To.</span>
+    </div>
+    <div class="tags"><span class="tag">Client preference</span><span class="tag">Risk</span><span class="tag">Politics</span><span class="tag">Standard practice</span><span class="tag">Other</span></div>
+    <div class="actions"><button class="btn primary" type="button" data-next>Confirm</button><button class="btn" type="button" data-next>Edit</button><button class="btn" type="button">Voice note</button><button class="btn ghost" type="button">Skip</button></div>
+  </div></div>`;
+
+  P.annaEdited = `<div class="card"><div class="card-head">Your Tacit digest<span class="meta">Mon 16:30 · 1 of 2</span></div><div class="card-body">
+    <h3>You rewrote Jonas's email to Halvorsen. Three changes stood out.</h3>
+    <div class="guess"><span class="lbl">Your rationale</span>
+      <span class="voice">With a CFO in the audience, lead with the decision you need and the date. Apologising signals weakness on the timeline. Kjersti owns the budget, so she goes on To.</span>
+      <span class="voice added">Also: never apologise for a delay the client caused. The data was late on their side.</span>
+    </div>
+    <div class="tags"><span class="tag">Client preference</span><span class="tag">Risk</span><span class="tag on">Politics</span><span class="tag on">Standard practice</span><span class="tag">Other</span></div>
+    <span class="timer">● Answered in 12 s</span>
+    <span class="field-lbl">Tacit drafted 2 knowledge items. Only you can approve them.</span>
+    <div class="heuristic"><span class="h-kind">Heuristic · draft</span><span class="h-text">${KB.k1.text}</span></div>
+    <div class="heuristic"><span class="h-kind">Heuristic · draft</span><span class="h-text">${KB.k2.text}</span></div>
+    <div class="actions"><button class="btn primary" type="button" data-next>Approve both</button><button class="btn" type="button">Edit</button></div>
+  </div></div>`;
+
+  P.annaApproved = `<div class="card"><div class="card-body">
+    <h3>2 heuristics approved</h3>
+    <p>Jonas will see your reasoning after he has tried to work it out himself.</p>
+    <span class="timer">● Total time today: 21 s</span>
+  </div></div>`;
+
+  P.jonasSpot = `<div class="card fresh"><div class="card-head">Notice<span class="meta">Mon 17:10</span></div><div class="card-body">
+    <h3>Anna sent your email to Halvorsen. Can you spot 3 things she changed?</h3>
+    <span class="field-lbl">What you noticed</span>
+    <div class="input-like">1. The data request is now at the top, with a deadline</div>
+    <div class="input-like">2. The apology is gone</div>
+    <div class="input-like empty-slot">3. …</div>
+    <div class="actions"><button class="btn primary" type="button" data-next>That's what I see</button><button class="btn" type="button">Show me the emails side by side</button></div>
+  </div></div>`;
+
+  P.jonasPredict = `<div class="card"><div class="card-head">Notice<span class="meta">Mon 17:12</span></div><div class="card-body">
+    <h3>Before you see Anna's reasoning: why do you think she removed the apology?</h3>
+    <span class="field-lbl">Your prediction</span>
+    <div class="input-like">It sounds more confident without it. And the delay wasn't really our fault, we were waiting for their data.</div>
+    <div class="actions"><button class="btn primary" type="button" data-next>Reveal Anna's reasoning</button></div>
+  </div></div>`;
+
+  P.jonasReveal = `<div class="card"><div class="card-head">Notice<span class="meta">Mon 17:13</span></div><div class="card-body">
+    <h3>Your prediction and Anna's reasoning</h3>
+    <div class="compare">
+      <div><span class="field-lbl">You</span><span>It sounds more confident without it. And the delay wasn't really our fault.</span></div>
+      <div><span class="field-lbl">Anna</span><span class="voice" style="font-size:var(--t-md)">Apologising signals weakness on the timeline. Never apologise for a delay the client caused.</span></div>
+    </div>
+    <div class="verdict ok"><span class="tick ok">✓</span><span><b>You saw both reasons.</b> Anna turns them into a rule: an apology shifts ownership of the timeline to us.</span></div>
+    <div class="verdict miss"><span class="tick miss">!</span><span><b>One change you didn't spot:</b> Kjersti moved from Cc to To. Anna: <i>"She owns the budget, so she's the one we're asking."</i></span></div>
+    <div class="actions"><button class="btn primary" type="button" data-next>Save to my journal</button><button class="btn" type="button">Ask Anna about this</button></div>
+    <p class="note-strip">Only you see this comparison.</p>
+  </div></div>`;
+
+  P.annaDeck = `<div class="card fresh"><div class="card-head">Your Tacit digest<span class="meta">Tue 16:30 · 1 of 1</span></div><div class="card-body">
+    <h3>You moved the recommendation to slide 1 and cut the sensitivity chart.</h3>
+    <div class="guess"><span class="lbl">Tacit's guess. Is this right?</span>
+      <span class="voice">Answer first. SteerCo members read slide 1, and the CFO wants the number. Sensitivity by depot is too detailed for this audience.</span>
+    </div>
+    <div class="actions"><button class="btn primary" type="button" data-next>Confirm</button><button class="btn" type="button">Edit</button><button class="btn" type="button">Voice note</button><button class="btn ghost" type="button">Skip</button></div>
+  </div></div>`;
+
+  P.annaDeckDone = `<div class="card"><div class="card-head">Your Tacit digest<span class="meta">Tue 16:30 · 1 of 1</span></div><div class="card-body">
+    <h3>You moved the recommendation to slide 1 and cut the sensitivity chart.</h3>
+    <span class="timer">● Confirmed in 1 tap · 4 s</span>
+    <div class="heuristic"><span class="h-kind">Heuristic · approved</span><span class="h-text">${KB.k3.text}</span></div>
+    <p class="note-strip">Jonas got a Notice card: "Before you look at v4: which slide would Kjersti read first?"</p>
+  </div></div>`;
+
+  P.annaDepends = `<div class="card fresh"><div class="card-head">From the SteerCo prep call<span class="meta">Tue 14:40</span></div><div class="card-body">
+    <h3>You said whether to show the downside scenario "depends who's in the room". What decides it?</h3>
+    <div class="quote">"Whether we show the downside scenario… it depends who's in the room." (14:21)</div>
+    <div class="voice-row"><span class="play">▶</span>${waveform(34)}<span class="timer" style="margin-left:auto">0:14</span></div>
+    <div class="guess"><span class="lbl">Your voice note, transcribed</span>
+      <span class="voice">If the CFO is there, show it upfront. She'll find it anyway, and it buys us trust. If it's only ops, keep it in the appendix so we don't derail the discussion.</span>
+    </div>
+    <span class="field-lbl">Tacit turned it into a conditional rule</span>
+    <div class="heuristic"><span class="h-kind">Heuristic · conditional · draft</span><span class="h-text">${KB.k4.text}</span></div>
+    <div class="actions"><button class="btn primary" type="button" data-next>Approve</button><button class="btn" type="button">Edit</button></div>
+  </div></div>`;
+
+  P.annaDependsDone = `<div class="card"><div class="card-body">
+    <h3>Approved: if the CFO attends, show the downside scenario upfront</h3>
+    <p>So Halvorsen's SteerCo on 14 Nov gets the downside scenario on slide 3.</p>
+    <span class="timer">● 14 s voice note · no typing</span>
+  </div></div>`;
+
+  P.jonasAsk = `<div class="card fresh"><div class="card-head">Ask Tacit<span class="meta">Wed 10:05</span></div><div class="card-body">
+    <div class="input-like">Should I send the SteerCo pre-read 24 or 48 hours before?</div>
+    <div class="guess"><span class="lbl">From approved knowledge</span>
+      <span>Send it <b>48 hours</b> before when the CFO attends, so finance has time to check the numbers. Otherwise 24 hours is fine.</span>
+    </div>
+    <div class="heuristic"><span class="h-kind">Source</span><span class="h-prov">Anna Lindqvist · SteerCo #2 · Halvorsen · approved 12 Sep</span></div>
+    <div class="actions"><button class="btn primary" type="button" data-next>That answers it</button><button class="btn" type="button">Still unsure: add to Anna's queue</button></div>
+    <p class="note-strip">Anna's question queue: 2 waiting for Friday's debrief. Anna wasn't interrupted.</p>
+  </div></div>`;
+
+  P.debrief = `<div class="card fresh"><div class="card-head">Friday debrief<span class="meta">Fri 8 Nov · 10 min</span></div><div class="card-body">
+    <h3>This week on SteerCo #3</h3>
+    <ul class="list">
+      <li><span class="tick">1</span><span><b>To vs Cc.</b> Who owns the decision, and how do you see it in the thread?</span></li>
+      <li><span class="tick">2</span><span><b>"It depends who's in the room."</b> Where else does the audience change what we show?</span></li>
+      <li><span class="tick">3</span><span><b>Jonas's open questions (2).</b> Pricing a change request · when to call instead of email</span></li>
+    </ul>
+    <dl class="kv">
+      <dt>Anna's time</dt><dd>4 answers · 51 s in total</dd>
+      <dt>Jonas</dt><dd>3 Notice cards · 1 question answered from knowledge</dd>
+      <dt>Approved</dt><dd>4 heuristics</dd>
+    </dl>
+    <div class="actions"><button class="btn primary" type="button" data-next>One month later →</button></div>
+  </div></div>`;
+
+  P.sofie = `<div class="card fresh"><div class="card-head">Tacit · new task<span class="meta">Mon 9 Dec</span></div><div class="card-body">
+    <h3>Starting a SteerCo deck where the CFO chairs? 3 heuristics from Anna Lindqvist apply.</h3>
+    <div class="heuristic"><span class="h-kind">${KB.k3.kind}</span><span class="h-text">${KB.k3.text}</span><span class="h-prov">${KB.k3.prov}</span></div>
+    <div class="heuristic"><span class="h-kind">${KB.k4.kind}</span><span class="h-text">${KB.k4.text}</span><span class="h-prov">${KB.k4.prov}</span></div>
+    <div class="heuristic"><span class="h-kind">Heuristic</span><span class="h-text">Send the pre-read <b>48 hours</b> before when the CFO attends, so finance can check the numbers.</span><span class="h-prov">Anna Lindqvist · SteerCo #2 · 12 Sep</span></div>
+    <div class="actions"><button class="btn primary" type="button">Pin to my task</button><button class="btn" type="button">Ask Anna</button></div>
+  </div></div>`;
+
+  /* ---------- Script ---------- */
+  const SCENES = [
+    { label: "Setup", notes: ["Real engagement, real pair: EM Anna and analyst Jonas.", "Tacit only watches what they opt in: one task, named sources.", "Consent is explicit, and Tacit never evaluates anyone."] },
+    { label: "Draft vs sent", notes: ["Jonas writes the draft. Anna rewrites it, as usual.", "This is where the learning normally gets lost: Jonas sees only the sent version.", "Tacit compares the two and highlights 3 changes."] },
+    { label: "Anna's Why card", notes: ["Delivered in a daily digest, not as an interruption.", "Tacit drafts a guess. Correcting is faster than writing.", "12 seconds of Anna's time produces 2 reusable heuristics, approved by her."] },
+    { label: "Jonas's Notice card", notes: ["Spot, then predict, then reveal: that order is the learning mechanism.", "Feedback is encouraging and private, never a score.", "The cc change he missed is the real lesson."] },
+    { label: "Deck revision", notes: ["Same pattern on documents: diffs between file versions.", "Confirming took 1 tap and 4 seconds.", "Jonas gets a Notice card before he looks at v4."] },
+    { label: "Meeting transcript", notes: ["'It depends' is where judgment hides.", "Tacit asks for the conditions, and Anna answers by voice.", "The result is an if/then rule, not a vague tip."] },
+    { label: "Ask queue", notes: ["Jonas asks without interrupting Anna.", "The answer comes from Anna's own approved knowledge from an earlier SteerCo, with its source.", "Anything unanswered goes to Friday's debrief."] },
+    { label: "Debrief & knowledge", notes: ["A 10-minute agenda built from the week's richest moments.", "Under a minute of Anna's time all week.", "4 heuristics approved, all with provenance."] },
+    { label: "One month later", notes: ["New analyst, new client, similar situation.", "Anna's judgment shows up when it's needed, with her name on it.", "This is the knowledge base KM teams have never managed to fill."] }
+  ];
+
+  const STEPS = [
+    { scene: 0, role: "anna", caption: "Anna and Jonas start work on the third steering-committee update for Halvorsen Logistics.", stream: ["kickoff"], panel: ["anna", P.create] },
+    { scene: 0, role: "jonas", caption: "Jonas accepts. Tacit now watches this one task, and nothing else.", task: "watching", panel: ["jonas", P.invite] },
+    { scene: 1, role: "jonas", caption: "Jonas drafts the data request to the client and sends it to Anna for review.", stream: ["draft"], panel: ["jonas", P.jonasWait], panelAlso: ["anna", `<div class="empty">Nothing for Anna yet.</div>`] },
+    { scene: 1, role: "jonas", caption: "Anna rewrites it and sends it. Tacit compares the draft with what was sent.", stream: ["sent"], moments: ["m1", "m2", "m3"] },
+    { scene: 2, role: "anna", caption: "At 16:30 Anna gets her digest. Tacit has already drafted its guess at her reasoning.", panel: ["anna", P.annaWhy], status: { m1: ["Asked Anna", "ask"], m2: ["Asked Anna", "ask"], m3: ["Asked Anna", "ask"] } },
+    { scene: 2, role: "anna", caption: "Anna confirms, adds one sentence, and Tacit drafts two heuristics. It took 12 seconds.", panel: ["anna", P.annaEdited], status: { m1: ["Answered · 12 s", "ok"], m2: ["Answered · 12 s", "ok"], m3: ["Answered · 12 s", "ok"] } },
+    { scene: 2, role: "anna", caption: "Nothing is shared until Anna approves it. Now the knowledge base has its first two entries.", panel: ["anna", P.annaApproved], kb: ["k1", "k2"] },
+    { scene: 3, role: "jonas", caption: "Jonas gets a Notice card. First he has to spot the changes himself.", panel: ["jonas", P.jonasSpot], status: { m1: ["Jonas spotted it", "ok"], m2: ["Jonas spotted it", "ok"], m3: ["Not spotted", ""] } },
+    { scene: 3, role: "jonas", caption: "Then he predicts Anna's reasoning before he is allowed to see it.", panel: ["jonas", P.jonasPredict] },
+    { scene: 3, role: "jonas", caption: "The reveal: he got the main idea, and learns the one thing he missed.", panel: ["jonas", P.jonasReveal] },
+    { scene: 4, role: "anna", caption: "Tuesday. Anna reorders Jonas's SteerCo deck and cuts a chart.", stream: ["deck"], moments: ["m4", "m5"], panel: ["anna", P.annaDeck], status: { m4: ["Asked Anna", "ask"], m5: ["Asked Anna", "ask"] } },
+    { scene: 4, role: "anna", caption: "One tap to confirm. A third heuristic, and a Notice card for Jonas.", panel: ["anna", P.annaDeckDone], kb: ["k3"], status: { m4: ["Answered · 4 s", "ok"], m5: ["Answered · 4 s", "ok"] } },
+    { scene: 5, role: "anna", caption: "In the prep call Anna says \"it depends\". That's where judgment hides.", stream: ["prep"], moments: ["m6"], status: { m6: ["Asking for the conditions", "ask"] }, panel: ["anna", `<div class="empty">Tacit is preparing a question from the call…</div>`] },
+    { scene: 5, role: "anna", caption: "Tacit asks what decides it. Anna answers with a 14-second voice note.", panel: ["anna", P.annaDepends] },
+    { scene: 5, role: "anna", caption: "\"It depends\" becomes an explicit if/then rule.", panel: ["anna", P.annaDependsDone], kb: ["k4"], status: { m6: ["Answered · voice 14 s", "ok"] } },
+    { scene: 6, role: "jonas", caption: "Jonas has a question. Tacit answers from Anna's approved knowledge, so Anna isn't interrupted.", panel: ["jonas", P.jonasAsk] },
+    { scene: 7, role: "jonas", caption: "Friday: a 10-minute debrief agenda and four approved heuristics, all from real work.", stream: ["debrief"], panel: ["jonas", P.debrief], panelAlso: ["anna", P.debrief], kbSpot: true },
+    { scene: 8, role: "sofie", caption: "One month later, Sofie starts a SteerCo deck for a new client whose CFO chairs the SteerCo.", reset: true, task: "sofie", stream: ["sofieKick"], panel: ["sofie", P.sofie], kbSpot: true, finale: true }
+  ];
+
+  /* ---------- State & rendering ---------- */
+  const $ = id => document.getElementById(id);
+  let step = 0;
+  let role = STEPS[0].role;
+
+  function build(i) {
+    const st = { stream: [], moments: [], kb: [], panels: {}, status: {}, task: "none", fresh: new Set() };
+    for (let j = 0; j <= i; j++) {
+      const s = STEPS[j];
+      if (s.reset) { st.stream = []; st.moments = []; }
+      (s.stream || []).forEach(x => { st.stream.push(x); if (j === i) st.fresh.add("s:" + x); });
+      (s.moments || []).forEach(x => { st.moments.push(x); if (j === i) st.fresh.add("m:" + x); });
+      (s.kb || []).forEach(x => { st.kb.push(x); if (j === i) st.fresh.add("k:" + x); });
+      if (s.panel) st.panels[s.panel[0]] = s.panel[1];
+      if (s.panelAlso) st.panels[s.panelAlso[0]] = s.panelAlso[1];
+      if (s.status) Object.assign(st.status, s.status);
+      if (s.task) st.task = s.task;
+    }
+    return st;
+  }
+
+  function render(changedStep) {
+    const s = STEPS[step];
+    const st = build(step);
+    if (changedStep) role = s.role;
+
+    // top
+    document.querySelectorAll(".scene-btn").forEach((b, k) => {
+      b.toggleAttribute("aria-current", false);
+      if (k === s.scene) b.setAttribute("aria-current", "step");
+      b.classList.toggle("done", k < s.scene);
+    });
+    $("counter").textContent = `${step + 1} / ${STEPS.length}`;
+    $("prevBtn").disabled = step === 0;
+    $("nextBtn").disabled = step === STEPS.length - 1;
+    const chip = $("taskChip");
+    chip.classList.toggle("watching", st.task !== "none");
+    $("taskText").innerHTML = st.task === "none" ? "No task yet"
+      : st.task === "sofie" ? "Watching <b>SteerCo #1 – Rasmussen Foods</b>"
+      : "Watching <b>SteerCo #3 – Halvorsen</b>";
+
+    // narration
+    $("sceneLabel").textContent = `Scene ${s.scene + 1} · ${SCENES[s.scene].label}`;
+    const nar = $("narration");
+    nar.classList.toggle("finale", !!s.finale);
+    $("caption").innerHTML = s.finale
+      ? `${s.caption} <em>Anna's judgment, available when it's needed.</em>`
+      : s.caption;
+
+    // stream
+    const streamEl = $("stream");
+    streamEl.innerHTML = st.stream.map(id => `<article class="item${st.fresh.has("s:" + id) ? " fresh" : ""}" data-id="${id}">${S[id].html}</article>`).join("");
+    const on = new Set(st.moments);
+    streamEl.querySelectorAll("mark.tm").forEach(el => el.classList.toggle("on", on.has(el.dataset.m)));
+    streamEl.querySelectorAll(".tmslide").forEach(el => el.classList.toggle("tm-on", on.has(el.dataset.m)));
+    const freshItem = streamEl.querySelector(".item.fresh");
+    if (freshItem && streamEl.scrollHeight > streamEl.clientHeight) {
+      streamEl.scrollTop = freshItem.offsetTop - streamEl.offsetTop - 12;
+    } else if (!freshItem && changedStep) {
+      const firstOn = streamEl.querySelector("mark.tm.on");
+      if (!firstOn) streamEl.scrollTop = streamEl.scrollHeight;
+    }
+
+    // moments
+    const mEl = $("moments");
+    if (s.finale) {
+      mEl.innerHTML = `<div class="moment fresh"><div class="moment-top"><span class="type">Matched knowledge</span><span class="value">from <b>SteerCo #2–3</b></span></div><h3>New task resembles Halvorsen SteerCo: CFO in the room, deck needed</h3><span class="src">3 approved heuristics found · Anna Lindqvist</span><span class="status ok">Shown to Sofie</span></div>`;
+      $("momentCount").textContent = "";
+    } else if (!st.moments.length) {
+      mEl.innerHTML = `<div class="empty">Nothing noticed yet. Tacit sends at most 3 moments a day to each senior.</div>`;
+      $("momentCount").textContent = "";
+    } else {
+      mEl.innerHTML = st.moments.slice().reverse().map(id => {
+        const x = M[id];
+        const stt = st.status[id] || ["Detected", ""];
+        return `<div class="moment${st.fresh.has("m:" + id) ? " fresh" : ""}">
+          <div class="moment-top"><span class="type">${x.type}</span><span class="value">Learning value <b>${x.value}</b></span></div>
+          <h3>${x.title}</h3><span class="src">${x.src}</span>
+          <span class="status ${stt[1]}">${stt[0]}</span></div>`;
+      }).join("");
+      $("momentCount").textContent = `${st.moments.length} this week`;
+    }
+
+    // role toggle
+    const sofieMode = s.scene === 8;
+    document.querySelectorAll(".seg button").forEach(b => {
+      const r = b.dataset.role;
+      b.hidden = sofieMode ? r !== "sofie" : r === "sofie";
+      b.setAttribute("aria-pressed", String(r === role));
+    });
+    const who = { anna: "Anna's view", jonas: "Jonas's view", sofie: "Sofie's view" };
+    $("roleWho").textContent = who[role];
+    const html = st.panels[role];
+    $("panel").innerHTML = html
+      ? (changedStep && role === s.role ? html : html.replace(/ fresh"/g, '"'))
+      : `<div class="empty">Nothing for ${role === "anna" ? "Anna" : role === "jonas" ? "Jonas" : "Sofie"} yet.</div>`;
+    $("panel").scrollTop = 0;
+
+    // knowledge band
+    $("kbCount").textContent = sofieMode ? "4" : String(st.kb.length);
+    const kbList = sofieMode ? ["k1", "k2", "k3", "k4"] : st.kb;
+    $("kbItems").innerHTML = kbList.length
+      ? kbList.map(id => `<div class="kb-item${st.fresh.has("k:" + id) ? " fresh" : ""}"><span class="h-kind">${KB[id].kind}</span><span>${KB[id].text}</span><span class="h-prov">${KB[id].prov}</span></div>`).join("")
+      : `<span class="kb-empty">Approved heuristics, decisions and cases will collect here, each with its source.</span>`;
+    $("kb").classList.toggle("spot", !!s.kbSpot || st.fresh.size > 0 && [...st.fresh].some(f => f.startsWith("k:")));
+    $("kb").querySelector(".kb-count small").textContent = sofieMode ? "from Anna's Halvorsen work" : "approved on this task";
+
+    // notes
+    $("notesTitle").textContent = `Presenter notes · ${SCENES[s.scene].label}`;
+    $("notesList").innerHTML = SCENES[s.scene].notes.map(n => `<li>${n}</li>`).join("");
+  }
+
+  function go(i) {
+    const n = Math.max(0, Math.min(STEPS.length - 1, i));
+    if (n === step) return;
+    step = n;
+    render(true);
+  }
+
+  // scene buttons
+  $("scenes").innerHTML = SCENES.map((sc, k) => `<button class="scene-btn" type="button" data-scene="${k}" title="${sc.label}">${k + 1}</button>`).join("");
+  $("scenes").addEventListener("click", e => {
+    const b = e.target.closest(".scene-btn");
+    if (!b) return;
+    const k = Number(b.dataset.scene);
+    go(STEPS.findIndex(s => s.scene === k));
+  });
+
+  $("prevBtn").addEventListener("click", () => go(step - 1));
+  $("nextBtn").addEventListener("click", () => go(step + 1));
+  $("restartBtn").addEventListener("click", () => { step = -1; go(0); });
+  $("notesBtn").addEventListener("click", toggleNotes);
+  function toggleNotes() {
+    const n = $("notes");
+    n.hidden = !n.hidden;
+    $("notesBtn").setAttribute("aria-pressed", String(!n.hidden));
+  }
+  $("panel").addEventListener("click", e => { if (e.target.closest("[data-next]")) go(step + 1); });
+  document.querySelector(".seg").addEventListener("click", e => {
+    const b = e.target.closest("button[data-role]");
+    if (!b) return;
+    role = b.dataset.role;
+    render(false);
+  });
+  document.addEventListener("keydown", e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const tag = (e.target.tagName || "").toLowerCase();
+    if (e.key === "ArrowRight" || e.key === "PageDown" || (e.key === " " && tag !== "button")) { e.preventDefault(); go(step + 1); }
+    else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); go(step - 1); }
+    else if (e.key === "n" || e.key === "N") toggleNotes();
+    else if (e.key === "r" || e.key === "R") { step = -1; go(0); }
+    else if (/^[1-9]$/.test(e.key)) go(STEPS.findIndex(s => s.scene === Number(e.key) - 1));
+  });
+
+  render(true);
+})();
+</script>
